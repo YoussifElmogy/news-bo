@@ -34,6 +34,7 @@ export default function EditNews() {
           category: capitalizeFirstLetter(newsData.category) || '',
           date: newsData.date ? new Date(newsData.date).toISOString().split('T')[0] : '',
           image: newsData.image || '',
+          isFeatured: newsData.isFeatured || false,
         });
       }
     };

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Box, Typography, FormControl, InputLabel, Select, MenuItem, FormHelperText } from '@mui/material';
+import { Box, Typography, FormControl, InputLabel, Select, MenuItem, FormHelperText, RadioGroup, FormControlLabel, Radio, FormLabel } from '@mui/material';
 import CustomTextField from '../../CustomTextField/CustomTextField';
 import Button from '../../Button/Button';
 import CustomLoader from '../../skeletons/CustomLoader';
@@ -28,10 +28,12 @@ const NewsForm = ({ onSubmit, initialValues, isLoading, isEditMode = false }) =>
       category: '',
       date: new Date().toISOString().split('T')[0],
       image: '',
+      isFeatured: false,
     },
   });
 
   const category = watch('category');
+  const isFeatured = watch('isFeatured');
   console.log(category);
 
   useEffect(() => {
@@ -43,6 +45,7 @@ const NewsForm = ({ onSubmit, initialValues, isLoading, isEditMode = false }) =>
       setValue('category', initialValues.category || '');
       setValue('date', initialValues.date || new Date().toISOString().split('T')[0]);
       setValue('image',  initialValues.image || '');
+      setValue('isFeatured', initialValues.isFeatured || false);
       if (initialValues.image) {
         setImagePreview(initialValues.image);
       }
@@ -70,6 +73,7 @@ const NewsForm = ({ onSubmit, initialValues, isLoading, isEditMode = false }) =>
       descriptionEnglish: data.descriptionEnglish || '',
       category: data.category.toLowerCase(), // Send lowercase to backend
       date: data.date,
+      isFeatured: data.isFeatured,
     };
 
     await onSubmit(newsData, imageFile);
@@ -208,6 +212,63 @@ const NewsForm = ({ onSubmit, initialValues, isLoading, isEditMode = false }) =>
             }}
             sx={{ mb: '1.333rem' }}
           />
+
+          {/* Is Featured Radio Buttons */}
+          <FormControl 
+            component="fieldset" 
+            error={!!errors.isFeatured}
+            sx={{ mb: '1.333rem' }}
+          >
+            <FormLabel 
+              component="legend"
+              sx={{
+                color: '#374151',
+                fontSize: '0.875rem',
+                fontWeight: 500,
+                mb: '0.5rem',
+                '&.Mui-focused': { color: '#3788F4' },
+              }}
+            >
+              Is Featured
+            </FormLabel>
+            <RadioGroup
+              row
+              value={isFeatured ? 'true' : 'false'}
+              onChange={(e) => setValue('isFeatured', e.target.value === 'true')}
+            >
+              <FormControlLabel 
+                value="true" 
+                control={
+                  <Radio 
+                    sx={{
+                      color: '#D1D5DB',
+                      '&.Mui-checked': {
+                        color: '#3788F4',
+                      },
+                    }}
+                  />
+                } 
+                label="Yes" 
+              />
+              <FormControlLabel 
+                value="false" 
+                control={
+                  <Radio 
+                    sx={{
+                      color: '#D1D5DB',
+                      '&.Mui-checked': {
+                        color: '#3788F4',
+                      },
+                    }}
+                  />
+                } 
+                label="No" 
+              />
+            </RadioGroup>
+            {errors.isFeatured && (
+              <FormHelperText>{errors.isFeatured?.message}</FormHelperText>
+            )}
+          </FormControl>
 
           {/* Image Upload */}
           <Box sx={{ mb: '1.333rem' }}>

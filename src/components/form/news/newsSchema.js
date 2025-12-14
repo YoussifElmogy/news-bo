@@ -8,6 +8,9 @@ const newsSchema = yup.object().shape({
   date: yup
     .string()
     .required('Date is required'),
+  isFeatured: yup
+    .boolean()
+    .required('Please select if this news is featured'),
 });
 
 export default newsSchema;
