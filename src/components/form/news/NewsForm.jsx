@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Box, Typography, FormControl, InputLabel, Select, MenuItem, FormHelperText, RadioGroup, FormControlLabel, Radio, FormLabel } from '@mui/material';
 import CustomTextField from '../../CustomTextField/CustomTextField';
+import RichTextEditor from '../../CustomTextField/RichTextEditor';
 import Button from '../../Button/Button';
 import CustomLoader from '../../skeletons/CustomLoader';
 import newsSchema from './newsSchema';
@@ -17,6 +18,7 @@ const NewsForm = ({ onSubmit, initialValues, isLoading, isEditMode = false }) =>
     formState: { errors },
     setValue,
     watch,
+    control,
   } = useForm({
     resolver: yupResolver(newsSchema),
     mode: 'onChange',
@@ -126,32 +128,36 @@ const NewsForm = ({ onSubmit, initialValues, isLoading, isEditMode = false }) =>
             sx={{ mb: '1.333rem' }}
           />
 
-          {/* Description AR */}
-          <CustomTextField
-            label="Description (Arabic)"
-            placeholder="أدخل الوصف بالعربية"
-            type="text"
-            fullWidth
-            multiline
-            rows={4}
-            error={!!errors.descriptionArabic}
-            helperText={errors.descriptionArabic ? errors.descriptionArabic.message : ''}
-            {...register('descriptionArabic')}
-            sx={{ mb: '1.333rem' }}
+          {/* Description AR - Rich Text Editor */}
+          <Controller
+            name="descriptionArabic"
+            control={control}
+            render={({ field }) => (
+              <RichTextEditor
+                label="Description (Arabic)"
+                placeholder="أدخل الوصف بالعربية"
+                value={field.value}
+                onChange={field.onChange}
+                error={!!errors.descriptionArabic}
+                helperText={errors.descriptionArabic?.message}
+              />
+            )}
           />
 
-          {/* Description EN */}
-          <CustomTextField
-            label="Description (English)"
-            placeholder="Enter description in English"
-            type="text"
-            fullWidth
-            multiline
-            rows={4}
+          {/* Description EN - Rich Text Editor */}
+          <Controller
+            name="descriptionEnglish"
+            control={control}
+            render={({ field }) => (
+              <RichTextEditor
+                label="Description (English)"
+                placeholder="Enter description in English"
+                value={field.value}
+                onChange={field.onChange}
                 error={!!errors.descriptionEnglish}
-            helperText={errors.descriptionEnglish ? errors.descriptionEnglish.message : ''}
-            {...register('descriptionEnglish')}
-            sx={{ mb: '1.333rem' }}
+                helperText={errors.descriptionEnglish?.message}
+              />
+            )}
           />
 
           {/* Category */}
